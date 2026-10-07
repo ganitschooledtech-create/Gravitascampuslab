@@ -1,0 +1,6 @@
+SPARK ROOKIE CHEAT SHEET — Gravitas AI Explorer Quest
+1. AI = computer systems that learn patterns from data to make predictions or create content.
+2. A PROMPT is the instruction you give an AI tool.
+3. Good prompts have: ROLE, TASK, CONTEXT, FORMAT.
+4. AI can be wrong — always check important facts.
+5. Never share personal information (phone, address, passwords) with AI tools.

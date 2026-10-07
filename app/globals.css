@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Brand tokens. Branding settings (Phase 3) can override these via CSS variables on <html>. */
+@theme {
+  --color-indigo-brand: #1b1640;
+  --color-cream: #fff8ee;
+  --color-sun: #ff8a1f;
+  --color-sun-dark: #c45f00; /* AA-contrast text variant of the orange on cream/white */
+  --color-electric: #3d6bff;
+  --color-electric-dark: #2447c7;
+  --color-ink: #1b1640;
+  --color-muted: #5b5878;
+  --color-line: #e7e1d6;
+  --color-ok: #137a43;
+  --color-bad: #b42318;
+  --font-heading: var(--font-fredoka), ui-rounded, system-ui, sans-serif;
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+}
+
+@layer base {
+  html { color-scheme: light; }
+  body { background: var(--color-cream); color: var(--color-ink); font-family: var(--font-sans); }
+  h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height: 1.2; }
+  :focus-visible { outline: 3px solid var(--color-electric); outline-offset: 2px; border-radius: 4px; }
+  a { color: var(--color-electric-dark); }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-indigo-brand text-white hover:bg-[#2b2460]; }
+  .btn-accent { @apply btn bg-sun text-indigo-brand hover:bg-[#ff9d45]; }
+  .btn-ghost { @apply btn border border-line bg-white text-ink hover:bg-cream; }
+  .btn-danger { @apply btn bg-bad text-white hover:opacity-90; }
+  .btn-sm { @apply px-3 py-1 text-sm rounded-lg; }
+  .card { @apply rounded-2xl border border-line bg-white p-5 shadow-sm; }
+  .input { @apply w-full rounded-xl border border-line bg-white px-3 py-2 text-ink placeholder:text-muted focus:border-electric focus:outline-none; }
+  .label { @apply mb-1 block text-sm font-semibold text-ink; }
+  .badge { @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold; }
+  .table { @apply w-full text-left text-sm; }
+  .table th { @apply border-b border-line px-3 py-2 font-bold text-muted; }
+  .table td { @apply border-b border-line px-3 py-2 align-top; }
+  .prose-lite p { @apply my-2; }
+  .prose-lite ul { @apply my-2 list-disc pl-6; }
+  .prose-lite ol { @apply my-2 list-decimal pl-6; }
+  .prose-lite h1 { @apply text-2xl my-3; }
+  .prose-lite h2 { @apply text-xl my-3; }
+  .prose-lite h3 { @apply text-lg my-2; }
+  .prose-lite code { @apply rounded bg-cream px-1; }
+  .prose-lite pre { @apply my-2 overflow-x-auto rounded-lg bg-indigo-brand p-3 text-cream; }
+  .prose-lite table { @apply my-2 border-collapse; }
+  .prose-lite td, .prose-lite th { @apply border border-line px-2 py-1; }
+}

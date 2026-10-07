@@ -1,0 +1,18 @@
+{
+  "nav.dashboard": "Dashboard",
+  "nav.myPrograms": "My programs",
+  "nav.studio": "Studio",
+  "nav.logout": "Log out",
+  "login.title": "Welcome back",
+  "login.school.title": "School login",
+  "login.school.code": "School code",
+  "login.school.username": "Username",
+  "login.school.pin": "6-digit PIN",
+  "login.submit": "Log in",
+  "learn.continue": "Continue",
+  "learn.next": "Next",
+  "learn.check": "Check answer",
+  "learn.locked": "Locked",
+  "learn.completed": "Completed",
+  "learn.progress": "{done} of {total} steps"
+}
