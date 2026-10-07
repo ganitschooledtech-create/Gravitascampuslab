@@ -18,7 +18,9 @@ type Result = { feedback: string; explanation?: string; reveal?: Reveal; isCorre
  * Step-by-step lesson player: one block at a time, progress bar, autosave after every block.
  * Skipping ahead is blocked here AND on the server, unless the lesson allows free navigation.
  */
-export function LessonPlayer({ lesson }: { lesson: LearnerLesson }) {
+type PreviewKeys = Record<string, { type: string; content: unknown; answerKey: unknown; settings: unknown }>;
+
+export function LessonPlayer({ lesson, preview }: { lesson: LearnerLesson; preview?: PreviewKeys }) {
   const blocks = lesson.blocks;
   const [completed, setCompleted] = useState<Set<string>>(new Set(lesson.progress?.completedBlockIds ?? []));
   const firstOpen = blocks.findIndex((b) => !completed.has(b.id));
@@ -43,7 +45,7 @@ export function LessonPlayer({ lesson }: { lesson: LearnerLesson }) {
     if (!block) return;
     setError(undefined);
     start(async () => {
-      const r = await submitBlockAction(lesson.id, block.id, response);
+      const r = preview ? await gradeLocally(preview, blocks.map((b) => b.id), completed, block.id, response) : await submitBlockAction(lesson.id, block.id, response);
       if (!r.ok) { setError(r.error); return; }
       const o = r.outcome;
       if (o.error) { setResults((s) => ({ ...s, [block.id]: { feedback: o.feedback, isCorrect: null, error: o.error } })); return; }
@@ -136,4 +138,13 @@ export function LessonPlayer({ lesson }: { lesson: LearnerLesson }) {
       </div>
     </div>
   );
+}
+
+/** Preview mode: grade in the browser (staff only — the page already has the answer keys). */
+async function gradeLocally(keys: PreviewKeys, ids: string[], done: Set<string>, blockId: string, response: unknown) {
+  const { gradeBlock } = await import("@/lib/blocks/grade");
+  const k = keys[blockId];
+  const r = gradeBlock(k.type, k.content, k.answerKey, k.settings, k.type === "submission" ? { submitted: true } : response);
+  const after = new Set(done).add(blockId);
+  return { ok: true as const, outcome: { ...r, lessonCompleted: ids.every((i) => after.has(i)), nextPosition: 0, levelMessage: "(Preview — no level was unlocked)" } };
 }
