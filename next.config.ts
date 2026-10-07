@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   // Vercel, a Docker container, AWS ECS/App Runner, or any Node host.
   output: "standalone",
   poweredByHeader: false,
+  devIndicators: false,
   serverExternalPackages: ["@node-rs/argon2", "postgres"],
   experimental: {
     serverActions: { bodySizeLimit: "12mb" },
