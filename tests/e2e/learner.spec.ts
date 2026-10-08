@@ -7,7 +7,7 @@ test("school learner logs in with PIN and works through a lesson step by step", 
   await page.getByRole("link", { name: "Level map" }).click();
   await expect(page.getByRole("heading", { name: /Level 1: Spark Rookie/ })).toBeVisible();
   await expect(page.getByText("Pass the previous level").first()).toBeVisible(); // Level 2 locked
-  await page.getByRole("link", { name: "What is AI?" }).click();
+  await page.getByText("Start →").first().click(); // the Start button opens the first lesson
   await page.waitForLoadState("networkidle"); // wait until the player is interactive
 
   // Step 1–7 are display blocks → Next

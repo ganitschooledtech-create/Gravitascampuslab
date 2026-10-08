@@ -40,13 +40,18 @@ export default async function ProgramMapPage({ params }: { params: Promise<{ slu
                   <div className="my-3"><ProgressBar value={(done / lv.lessons.length) * 100} label={`${lv.name} progress`} /></div>
                   <ul className="divide-y divide-line">
                     {lv.lessons.map((ls) => (
-                      <li key={ls.id} className="flex items-center justify-between gap-3 py-3">
-                        <div>
-                          <Link href={`/learn/lessons/${ls.id}`} className="font-bold">{ls.title}</Link>
-                          {ls.isAssessment && <span className="badge ml-2 bg-electric/10 text-electric-dark">Level test</span>}
-                          <p className="text-sm text-muted">{ls.summary}</p>
-                        </div>
-                        <span className="text-sm font-bold text-muted">{ls.status === "completed" ? "✅ Done" : ls.percent ? `${ls.percent}%` : "Start"}</span>
+                      <li key={ls.id}>
+                        {/* The whole row is one link, so learners can tap anywhere (big touch target for lab computers). */}
+                        <Link href={`/learn/lessons/${ls.id}`} className="-mx-2 flex items-center justify-between gap-3 rounded-xl px-2 py-3 text-ink no-underline hover:bg-cream">
+                          <span>
+                            <span className="font-bold text-electric-dark">{ls.title}</span>
+                            {ls.isAssessment && <span className="badge ml-2 bg-electric/10 text-electric-dark">Level test</span>}
+                            <span className="block text-sm text-muted">{ls.summary}</span>
+                          </span>
+                          {ls.status === "completed"
+                            ? <span className="shrink-0 text-sm font-bold text-ok">✅ Done · Review</span>
+                            : <span className="btn-accent btn-sm shrink-0">{ls.percent ? `Continue (${ls.percent}%)` : "Start →"}</span>}
+                        </Link>
                       </li>
                     ))}
                   </ul>
