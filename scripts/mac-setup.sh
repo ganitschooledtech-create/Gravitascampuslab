@@ -11,19 +11,30 @@ command -v docker >/dev/null || { echo "❌ Docker CLI is missing. Install it: b
 echo "▶ Starting Colima…"
 colima status >/dev/null 2>&1 || colima start
 
+# Port 5433 (not 5432) so it never clashes with a PostgreSQL already installed on the Mac (e.g. Homebrew/Postgres.app).
+PORT=5433
 if docker ps -a --format '{{.Names}}' | grep -qx gravitas-pg; then
-  echo "▶ Starting existing database container…"
-  docker start gravitas-pg >/dev/null
-else
-  echo "▶ Creating database container (gravitas-pg)…"
+  if docker port gravitas-pg 5432/tcp 2>/dev/null | grep -q ":$PORT$"; then
+    echo "▶ Starting existing database container…"
+    docker start gravitas-pg >/dev/null
+  else
+    echo "▶ Re-creating database container on port $PORT…"
+    docker rm -f gravitas-pg >/dev/null
+  fi
+fi
+if ! docker ps -a --format '{{.Names}}' | grep -qx gravitas-pg; then
+  echo "▶ Creating database container (gravitas-pg on port $PORT)…"
   docker run -d --name gravitas-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=gravitas \
-    -p 5432:5432 -v gravitas-pg-data:/var/lib/postgresql/data postgres:16 >/dev/null
+    -p $PORT:5432 -v gravitas-pg-data:/var/lib/postgresql/data postgres:16 >/dev/null
 fi
 
 echo "▶ Waiting for the database…"
-for i in $(seq 1 30); do docker exec gravitas-pg pg_isready -U postgres >/dev/null 2>&1 && break; sleep 1; done
+for i in $(seq 1 30); do docker exec gravitas-pg pg_isready -U postgres -d gravitas >/dev/null 2>&1 && break; sleep 1; done
+sleep 2
 
 [ -f .env.local ] || cp .env.example .env.local
+# Point the app at the Colima database (port 5433).
+sed -i '' 's#^DATABASE_URL=.*#DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5433/gravitas#' .env.local
 [ -d node_modules ] || { echo "▶ Installing packages (first time only)…"; npm install; }
 
 echo "▶ Setting up tables and demo data…"
