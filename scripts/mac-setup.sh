@@ -14,18 +14,18 @@ colima status >/dev/null 2>&1 || colima start
 # Port 5433 (not 5432) so it never clashes with a PostgreSQL already installed on the Mac (e.g. Homebrew/Postgres.app).
 PORT=5433
 if docker ps -a --format '{{.Names}}' | grep -qx gravitas-pg; then
-  if docker port gravitas-pg 5432/tcp 2>/dev/null | grep -q ":$PORT$"; then
+  if docker port gravitas-pg 5432/tcp 2>/dev/null | grep -q ":${PORT}$"; then
     echo "▶ Starting existing database container…"
     docker start gravitas-pg >/dev/null
   else
-    echo "▶ Re-creating database container on port $PORT…"
+    echo "▶ Re-creating database container on port ${PORT}…"
     docker rm -f gravitas-pg >/dev/null
   fi
 fi
 if ! docker ps -a --format '{{.Names}}' | grep -qx gravitas-pg; then
-  echo "▶ Creating database container (gravitas-pg on port $PORT)…"
+  echo "▶ Creating database container (gravitas-pg on port ${PORT})…"
   docker run -d --name gravitas-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=gravitas \
-    -p $PORT:5432 -v gravitas-pg-data:/var/lib/postgresql/data postgres:16 >/dev/null
+    -p ${PORT}:5432 -v gravitas-pg-data:/var/lib/postgresql/data postgres:16 >/dev/null
 fi
 
 echo "▶ Waiting for the database…"
